@@ -152,10 +152,8 @@ handleICECandidateEvent = (e:any) => {
 
  handleNewICECandidateMsg = (incoming:any) =>{
 
-  if(incoming.candidate !==''){
-    alert("received ice")
-    console.warn("I JUST RECEIVED THE INCOMING ICE CANDIDATE", incoming)
-    console.warn("peerRef", this.peerRef)
+  if(incoming.candidate !==''){ 
+    console.warn("I JUST RECEIVED THE INCOMING ICE CANDIDATE", incoming) 
     const candidate = new RTCIceCandidate(incoming);
 
     console.warn("peerRef candidate", candidate)
