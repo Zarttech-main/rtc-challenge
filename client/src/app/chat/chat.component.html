@@ -1,0 +1,30 @@
+
+<!-- No style. it can be styled alot more -->
+<div class="video-grid">
+ 
+  <div class="container"> 
+    <div class="form-group mt-4 w-50">Copy and send meeting link to other users to join.
+      <input type="text" class="form-control" value="{{callId}}">
+    </div>
+    <button class="btn btn-danger mt-3" (click)="endCall()">End Call</button>
+    
+    <div class="row mt-5">
+       <div *ngFor="let video of videos" class="col-md-4" >  
+        <div class="card m-2">
+          <div class="card-body"> 
+            <span *ngIf="video.userId !== currentUserId; else currentUserVideoLabel">{{ video.userId }}</span>
+            <ng-template #currentUserVideoLabel>
+              <span>You</span>
+            </ng-template>
+            <video
+              [srcObject]="video.srcObject"
+              (loadedmetadata)="onLoadedMetadata($event)"
+              [muted]="video.muted"
+              class="w-100"
+            >
+            </video> 
+          </div>
+        </div>
+        </div>
+    </div>
+  </div> 
