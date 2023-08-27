@@ -1,11 +1,11 @@
 <main class="page">
   <h1 class="page-title">Meeting Dashboard</h1>
-<form class="new-meeting" action="/action_page.php">
+<form class="new-meeting" (ngSubmit)="submit()" ngNativeValidate>
   <label for="name">Meeting Name</label>
-  <input type="text" id="name" name="name" placeholder="Class Meeting..">
+  <input [(ngModel)]="name"  type="text" id="name" name="name" placeholder="Class Meeting.." required>
 
   <label for="description">Meeting Description</label>
-  <input type="text" id="description" name="description" placeholder="Discussion group for the SS3 class..">
+  <input  [(ngModel)]="description"  type="text" id="description" name="description" placeholder="Discussion group for the SS3 class.." required>
 
   
   <label for="type">Meeting Type</label>

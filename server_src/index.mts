@@ -62,7 +62,8 @@ socketIOServer.on("connection", (socket) => {
 });
 
 function meetingAlreadyExists(meetingName: string) {
-  return !!(socketIOServer.sockets.adapter.rooms.get(meetingName));
+  const meeting = socketIOServer.sockets.adapter.rooms.get(meetingName);
+  return !!(meeting && meeting.size);
 }
 function getMeetingParticipants(meetingName: string) {
   return socketIOServer.sockets.adapter.rooms.get(meetingName);
