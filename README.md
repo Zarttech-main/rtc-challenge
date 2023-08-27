@@ -1,4 +1,4 @@
-# WebRTC Video and Voice Call Application
+# WebRTC Video and Voice Call Application with Angular and Nodejs
 
 This is a simple Real-Time Communication (RTC) application that enables users to make video and voice calls using WebRTC technology. The application utilizes Angular for the frontend and Node.js for signaling.
 
