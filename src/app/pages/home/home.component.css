@@ -1,0 +1,94 @@
+.card {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid #00000020;
+  border-radius: 0.8rem;
+}
+
+.card-footer {
+  border-bottom-right-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+}
+
+.card-footer {
+  padding: 1.5rem;
+  background-color: transparent;
+  border-top: 0;
+}
+
+.card>hr {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1rem 1.25rem;
+}
+
+.card-title {
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  font-size: 20px;
+  font-family: Roboto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+.card-primer {
+  font-family: Roboto, sans-serif !important;
+  border-radius: 5px !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 1px 3px #0000001a, 0 1px 2px #00000033, inset 1px 1px 1px #ffffff99, inset -1px -1px 1px #0c0d120f, -1px -1px 1px #ffffff99, -1px -1px 4px #ffffff99, -2px -2px 8px #ffffff99, 1px 1px 1px #0c0d120f, 1px 1px 4px #0c0d120f, 2px 2px 8px #0c0d120f !important;
+  background-color: hsl(228deg 14% 93%);
+  border: none !important;
+  padding: 6px 12px;
+  text-transform: uppercase;
+  background-color: lightgray;
+  color: indigo !important;
+  font-weight: bolder !important;
+  text-decoration: navajowhite;
+  display: inline-block;
+  margin: 5px 0 15px 0;
+  font-size: 0.7em;
+}
+
+.active-meetings {
+  display: flex;
+  justify-content: space-around;
+}
+
+.active-meetings>.card {
+  width: 400px;
+}
+
+
+
+.card-footer .card-link {
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: #007bff;
+}
+
+.new-meeting {
+  display: flex;
+  justify-content: end;
+  margin: 30px;
+}
+
+.new-meeting button {
+  float: right;
+  width: 150px;
+  height: 35px;
+  border-radius: 10px;
+  color: #007bff;
+  cursor: pointer;
+}
