@@ -6,16 +6,16 @@
     </a>
   </div>
   <section class="active-meetings">
-    <div class="card">
+    <div class="card"  *ngFor="let meeting of meetings | keyvalue">
       <div class="card-body">
-        <div><a class="card-link card-primer">5 participants</a></div>
-        <h5 class="card-title">Classroom Discussion</h5>
+        <div><a class="card-link card-primer">{{meeting.value.number_of_participants}} participants</a></div>
+        <h5 class="card-title">{{meeting.key}}</h5>
         <hr>
-        <p class="card-text">This is the meeting for discussing issues about modalities in a hypothetical classroom.</p>
+        <p class="card-text">{{meeting.value.description}}</p>
       </div>
       <div class="card-footer">
         <div>
-          <div class="media-body"><a class="card-link">Join</a></div>
+          <div class="media-body"><a class="card-link" (click))="joinMeeting(meeting.key)">Join</a></div>
           <div class="footerright">
           </div>
         </div>

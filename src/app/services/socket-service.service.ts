@@ -8,16 +8,20 @@ const SERVER_URL = "ws://localhost:3000";
 })
 export class SocketService {
   private socket: Socket;
-  private meetingsSubscribers: Array<Subscriber<unknown>> = [];
+  private meetingsData: MeetingsMetadata = {};
+  private meetingsSubscribers: Array<Subscriber<MeetingsMetadata>> = [];
+  public readonly meetingsObservable: Observable<MeetingsMetadata>;
   constructor() {
-    const meetingsObservable = new Observable((subscriber) => {
+    this.meetingsObservable = new Observable((subscriber) => {
+      subscriber.next(this.meetingsData);
       this.meetingsSubscribers.push(subscriber);
     });
 
     const socket = io(SERVER_URL, {
       transports: ["websocket"]
     });
-    socket.on("available_meetings", (meetingsData) => {
+    socket.on("available_meetings", (meetingsData: MeetingsMetadata) => {
+      this.meetingsData = meetingsData;
       this.meetingsSubscribers.forEach(subscriber => subscriber.next(meetingsData));
     });
     this.socket = socket;
@@ -38,4 +42,12 @@ export class SocketService {
     });
   }
 
+}
+
+
+export interface MeetingsMetadata {
+  [meetingName: string]: {
+    description: string,
+    number_of_participants: number
+  }
 }

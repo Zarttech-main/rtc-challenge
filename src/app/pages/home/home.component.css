@@ -8,6 +8,7 @@
   background-clip: border-box;
   border: 1px solid #00000020;
   border-radius: 0.8rem;
+  margin-bottom: 25px;
 }
 
 .card-footer {
@@ -63,6 +64,7 @@
 .active-meetings {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .active-meetings>.card {
