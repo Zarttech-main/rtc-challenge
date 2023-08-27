@@ -8,6 +8,8 @@ This is a simple Real-Time Communication (RTC) application that enables users to
 - Real-time signaling using Node.js.
 - User authentication and identification.
 - Easy-to-use interface for initiating and receiving calls.
+- Ability handle potential network interruptions and reconnections.
+- Can handle multiple concurrent users and sessions
 
 ## Prerequisites
 
