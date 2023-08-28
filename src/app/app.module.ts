@@ -9,12 +9,14 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewMeetingComponent } from './pages/new-meeting/new-meeting.component';
 import { FormsModule } from '@angular/forms';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
+import { MeetingComponent } from './pages/meeting/meeting.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    NewMeetingComponent
+    NewMeetingComponent,
+    MeetingComponent
   ],
   imports: [
     FormsModule,

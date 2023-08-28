@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SocketService } from 'src/app/services/socket-service.service';
@@ -9,19 +10,21 @@ import { SocketService } from 'src/app/services/socket-service.service';
   styleUrls: ['./new-meeting.component.css']
 })
 export class NewMeetingComponent {
-  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService) {console.log("servie:", socketService)}
-name = "";
-description = "";
-async submit() {
-  this.loader.start();
-  try {
-    await this.socketService.createMeeting(this.name, this.description);
-  this.toastr.success("Meeting created: " + this.name)
-  } catch (error: any) {console.log(error)
-    this.toastr.error(error)
-  } finally {
-  this.loader.stop();
-}
+  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService, private router: Router) {}
+  name = "";
+  description = "";
+  async submit() {
+    this.loader.start();
+    try {
+      await this.socketService.createMeeting(this.name, this.description);
+      this.toastr.success("Meeting created: " + this.name)
+  this.router.navigateByUrl("meeting?name=" + this.name);
+    } catch (error: any) {
+      console.log(error)
+      this.toastr.error(error)
+    } finally {
+      this.loader.stop();
+    }
 
-}
+  }
 }

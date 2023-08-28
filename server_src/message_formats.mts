@@ -11,15 +11,17 @@ export interface ServerToClientEvents {
   created: (meetingName: string) => void;
   offer: (meetingName: string, offer: any, clientId: string) => void;
   answer: (meetingName: string, offer: any, clientId: string) => void;
-  candidate: (candidate: any) => void;
-  available_meetings: (metadata: MeetingsMetadata) => void
+  candidate: (meetingName: string, candidate: any, clientId: string) => void;
+  available_meetings: (metadata: MeetingsMetadata) => void;
+  joined: (meetingName: string, clientId: string) => void
 }
 
 export interface ClientToServerEvents {
   new_meeting: (meetingName: string, meetingDescription: string) => void;
-  join: (meetingName: string, offer: any) => void;
+  join_meeting: (meetingName: string, offer: any) => void;
   answer: (meetingName: string, clientId: string, answer: any) => void;
-  candidate: (candidate: any) => void;
+  offer: (meetingName: string, clientId: string, offer: any) => void;
+  candidate: (meetingName: string, cleintId: string, candidate: any) => void;
 }
 
 export interface InterServerEvents {

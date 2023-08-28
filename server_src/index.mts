@@ -31,9 +31,11 @@ socketIOServer.on("connection", (socket) => {
     socketIOServer.emit("available_meetings", meetingsMetadata);
     console.log("Client ID " + socket.id + " created meeting " + meetingName);
     socket.emit("created", meetingName,);
+    socket.emit("joined", meetingName, socket.id);
   });
 
-  socket.on("join", (meetingName, offer) => {
+  socket.on("join_meeting", (meetingName) => {
+    console.log("meta: ", meetingsMetadata, " query: ", meetingName)
     if (!meetingAlreadyExists(meetingName)) {
       socket.emit("meeting_doesnt_exist_error", meetingName);
       return;
@@ -43,9 +45,18 @@ socketIOServer.on("connection", (socket) => {
     console.log("Meeting " + meetingName + " now has " + getMeetingParticipants(meetingName)?.size + "participants");
     meetingsMetadata[meetingName].number_of_participants++;
     socketIOServer.emit("available_meetings", meetingsMetadata);
-    socketIOServer.to(meetingName).emit("offer", meetingName, offer, socket.id);
+    socketIOServer.to(meetingName).emit("joined", meetingName, socket.id);
   });
 
+  socket.on("offer", (meetingName, socketId, offer) => {
+    if (!meetingAlreadyExists(meetingName)) {
+      socket.emit("meeting_doesnt_exist_error", meetingName);
+      return;
+    }
+    console.log("Client ID " + socket.id + " has offered to " + socketId + " in meeting: " + meetingName);
+    socketIOServer.sockets.sockets.get(socketId)?.emit("offer", meetingName, offer, socket.id);
+  });
+  
   socket.on("answer", (meetingName, socketId, answer) => {
     if (!meetingAlreadyExists(meetingName)) {
       socket.emit("meeting_doesnt_exist_error", meetingName);
@@ -54,10 +65,9 @@ socketIOServer.on("connection", (socket) => {
     console.log("Client ID " + socket.id + " has connected with " + socketId + " in meeting: " + meetingName);
     socketIOServer.sockets.sockets.get(socketId)?.emit("answer", meetingName, answer, socket.id);
   });
-  
-  socket.on("candidate", (candidate) => {
-    console.log("Client ID " + socket.id + " has broadcasted their ice candidate");
-    socket.broadcast.emit("candidate", candidate);
+  socket.on("candidate", (meetingName, socketId, candidate) => {
+    console.log("Client ID " + socket.id + " has broadcasted their ice candidate" + " to" + socketId);
+    socketIOServer.sockets.sockets.get(socketId)?.emit("candidate", meetingName, candidate, socket.id);
   });
 });
 

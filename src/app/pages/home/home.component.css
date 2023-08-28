@@ -78,6 +78,12 @@
   font-weight: 500;
   font-size: 1.5rem;
   color: #007bff;
+  cursor: pointer;
+}
+.card-footer .card-link:hover {
+  background: lightgray;
+  display: inline-block;
+  border-radius: 5px;
 }
 
 .new-meeting {
