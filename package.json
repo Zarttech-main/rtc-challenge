@@ -4,13 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "server": "tsc -p server.tsconfig.json && node server_dist/index.mjs",
+    "build": "tsc -p server.tsconfig.json && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^15.0.0",
+    "@angular/animations": "^15.2.9",
     "@angular/common": "^15.0.0",
     "@angular/compiler": "^15.0.0",
     "@angular/core": "^15.0.0",
@@ -18,7 +19,12 @@
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
+    "express": "^4.18.2",
+    "ngx-toastr": "^17.0.2",
+    "ngx-ui-loader": "^13.0.0",
     "rxjs": "~7.5.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },

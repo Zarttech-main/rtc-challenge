@@ -1,0 +1,19 @@
+<main class="page">
+  <h1 class="page-title">Create New Meeting</h1>
+<form class="new-meeting" (ngSubmit)="submit()" ngNativeValidate>
+  <label for="name">Meeting Name</label>
+  <input [(ngModel)]="name"  type="text" id="name" name="name" placeholder="Class Meeting.." required>
+
+  <label for="description">Meeting Description</label>
+  <input  [(ngModel)]="description"  type="text" id="description" name="description" placeholder="Discussion group for the SS3 class.." required>
+
+  
+  <label for="type">Meeting Type</label>
+  <select id="type" name="type">
+    <option value="video">video</option>
+    <option value="canada" disabled>Audio</option>
+  </select>
+
+  <input class="submit" type="submit" value="Submit">
+</form>
+</main>

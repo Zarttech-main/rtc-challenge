@@ -1,0 +1,9 @@
+<main class="page">
+  <h1 class="page-title">Choose Your Meeting Username To Continue</h1>
+<form class="choose-name" (ngSubmit)="submit()" ngNativeValidate>
+  <label for="name">Username</label>
+  <input [(ngModel)]="name"  type="text" id="name" name="name" placeholder="E.g. John Doe" required>
+
+  <input type="submit" value="Submit">
+</form>
+</main>

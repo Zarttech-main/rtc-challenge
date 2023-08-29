@@ -1,0 +1,24 @@
+<main class="page">
+  <h1 class="page-title">{{meetingName}} Meeting</h1>
+  <div>
+    <a class="exit-meeting" (click)="exitMeeting()">
+      <button>Exit</button>
+    </a>
+  </div>
+  <section class="active-meetings">
+    <div class="card">
+      <div class="card-body">
+        <video [srcObject]="ownStream" [autoplay]="true"></video>
+        <h5 class="card-title">You</h5>
+        <hr>
+      </div>
+    </div>
+    <div class="card"  *ngFor="let stream of streams | keyvalue">
+      <div class="card-body">
+        <video [srcObject]="stream.value" [autoplay]="true"></video>
+        <h5 class="card-title">{{stream.key | getPeerName}}</h5>
+        <hr>
+      </div>
+    </div>
+  </section>
+</main>
