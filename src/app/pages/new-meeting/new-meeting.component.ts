@@ -10,10 +10,17 @@ import { SocketService } from 'src/app/services/socket-service.service';
   styleUrls: ['./new-meeting.component.css']
 })
 export class NewMeetingComponent {
-  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService, private router: Router) {}
+  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService, private router: Router) {
+    if (!this.socketService.getName()) {
+      this.router.navigateByUrl("choose-name?next=new-meeting");
+  }}
   name = "";
   description = "";
   async submit() {
+    if (!this.socketService.getName()) {
+      this.router.navigateByUrl("choose-name?next=new-meeting");
+      return;
+    }
     this.loader.start();
     try {
       await this.socketService.createMeeting(this.name, this.description);

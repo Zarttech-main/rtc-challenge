@@ -1,0 +1,10 @@
+.active-meetings {
+  display: flex;
+justify-content: space-around;
+flex-wrap: wrap;
+}
+.card-body video {
+  border-radius: 15px;
+border: 12px black groove;
+max-width: 95vw;
+}

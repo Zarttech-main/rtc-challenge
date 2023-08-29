@@ -10,13 +10,18 @@ import { NewMeetingComponent } from './pages/new-meeting/new-meeting.component';
 import { FormsModule } from '@angular/forms';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { MeetingComponent } from './pages/meeting/meeting.component';
+import { GetPeerNamePipe } from './pipes/get-peer-name.pipe';
+import { ChooseNameComponent } from './pages/choose-name/choose-name.component';
+import { SocketService } from './services/socket-service.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     NewMeetingComponent,
-    MeetingComponent
+    MeetingComponent,
+    GetPeerNamePipe,
+    ChooseNameComponent
   ],
   imports: [
     FormsModule,
@@ -26,7 +31,7 @@ import { MeetingComponent } from './pages/meeting/meeting.component';
     ToastrModule.forRoot(),
     NgxUiLoaderModule,
   ],
-  providers: [],
+  providers: [SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

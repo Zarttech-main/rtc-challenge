@@ -16,7 +16,7 @@
     <div class="card"  *ngFor="let stream of streams | keyvalue">
       <div class="card-body">
         <video [srcObject]="stream.value" [autoplay]="true"></video>
-        <h5 class="card-title">{{stream.key}}</h5>
+        <h5 class="card-title">{{stream.key | getPeerName}}</h5>
         <hr>
       </div>
     </div>

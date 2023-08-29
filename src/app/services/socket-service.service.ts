@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, Subscriber } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 
@@ -10,8 +11,11 @@ const SERVER_URL = "ws://localhost:3000";
 export class SocketService {
   private socket: Socket;
   private meetingsData: MeetingsMetadata = {};
+  private names: {[id: string]:  string} = {};
   private meetingsSubscribers: Array<Subscriber<MeetingsMetadata>> = [];
+  private namesSubscribers: Array<Subscriber<{[id: string]:  string}>> = [];
   public readonly meetingsObservable: Observable<MeetingsMetadata>;
+  public readonly namesObservable: Observable<{[id: string]:  string}>;
   private peerConnections: PeerConnections = {};
   private _ownStream: MediaStream | null = null;
   private get ownStream(): Promise<MediaStream> {
@@ -21,27 +25,45 @@ export class SocketService {
     }) : Promise.resolve(this._ownStream);
   };
   pendingJoinCallbacks: Array<Function> = [];
+  pendingNameChangeCallbacks: Array<Function> = [];
   streams: MediaStreams = {};
   streamsObservables: StreamsObservables = {};
   streamsSubscribers: StreamsSubscribers = {};
   candidates: any = {};
 
 
-  constructor() {
+  constructor(private toaster: ToastrService) {
     this.meetingsObservable = new Observable((subscriber) => {
       subscriber.next(this.meetingsData);
       this.meetingsSubscribers.push(subscriber);
     });
+    
+    this.namesObservable = new Observable((subscriber) => {
+      subscriber.next(this.names);
+      this.namesSubscribers.push(subscriber);
+    });
 
-    const socket = io(SERVER_URL, {
+    const socket = this.socket = io(SERVER_URL, {
       transports: ["websocket"]
+    });
+    socket.on("connect", () => {
+    if (localStorage.getItem("name")) this.setName(localStorage.getItem("name")!!);
     });
     socket.on("available_meetings", (meetingsData: MeetingsMetadata) => {
       this.meetingsData = meetingsData;
       this.meetingsSubscribers.forEach(subscriber => subscriber.next(meetingsData));
     });
+    socket.on("names", (names: {[id: string]:  string}) => {
+      this.names = names;
+    });
+    socket.on("name_changed", (name: string) => {
+      if (this.pendingNameChangeCallbacks.length) this.pendingNameChangeCallbacks[0]();
+    });
     socket.on("meeting_doesnt_exist_error", (meetingName) => {
       if (this.pendingJoinCallbacks.length) this.pendingJoinCallbacks[1]("Meeting doesn't exist");
+    });
+    socket.on("name_already_taken_error", (name) => {
+      if (this.pendingNameChangeCallbacks.length) this.pendingNameChangeCallbacks[1]("Username " + name +" already taken");
     });
     socket.on("joined", async (meetingName: string, clientId: string) => {
       if (clientId == socket.id) {
@@ -63,7 +85,10 @@ export class SocketService {
       peerConnection.onicecandidate = event => socket.emit("candidate", meetingName, clientId, event.candidate);
       peerConnection.ontrack = event => {
         let stream = this.streams[meetingName][clientId];
-        if (!stream) stream = this.streams[meetingName][clientId] = new MediaStream();
+        if (!stream) {
+          stream = this.streams[meetingName][clientId] = new MediaStream();
+          this.toaster.info(this.names[clientId] + " joined the meeting");
+        }
         event.streams.forEach(incomingStream => incomingStream.getTracks().forEach(track => stream.addTrack(track)))
         this.streamsSubscribers[meetingName].forEach(subscriber => subscriber.next(this.streams[meetingName]));
       }
@@ -79,7 +104,10 @@ export class SocketService {
       });
       peerConnection.ontrack = event => {
         let stream = this.streams[meetingName][clientId];
-        if (!stream) stream = this.streams[meetingName][clientId] = new MediaStream();
+        if (!stream) {
+          stream = this.streams[meetingName][clientId] = new MediaStream();
+          this.toaster.info(this.names[clientId] + " joined the meeting");
+        }
         event.streams.forEach(incomingStream => incomingStream.getTracks().forEach(track => stream.addTrack(track)))
         this.streamsSubscribers[meetingName].forEach(subscriber => subscriber.next(this.streams[meetingName]));
       }
@@ -108,7 +136,6 @@ export class SocketService {
       };
       await this.peerConnections[meetingName][clientId].addIceCandidate(candidate);
     });
-    this.socket = socket;
   }
   createMeeting(name: string, description: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
@@ -134,6 +161,23 @@ export class SocketService {
     this._ownStream = stream;
   }
 
+  getPeerName(value: string): string {
+    return this.names[value]!!;
+  }
+  getName(): string | undefined {
+    return this.names[this.socket.id];
+  }
+  setName(name: string) {
+    return new Promise((async (resolve, reject) => {
+      try {
+        localStorage.setItem("name", name)
+        this.socket.emit("name", name);
+        this.pendingNameChangeCallbacks = [resolve, reject];
+      } catch (err: any) {
+        reject(err.message);
+      }
+    }));
+  }
 }
 
 

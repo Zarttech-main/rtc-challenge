@@ -100,3 +100,8 @@
   color: #007bff;
   cursor: pointer;
 }
+.not-available-caption {
+text-align: center;
+font-size: 2.2em;
+color: darkgray;
+}

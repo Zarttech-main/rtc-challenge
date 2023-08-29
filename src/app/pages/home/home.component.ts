@@ -17,6 +17,10 @@ export class HomeComponent {
     socketService.meetingsObservable.subscribe(meetingsMetaData => this.meetings = meetingsMetaData);
   }
   async joinMeeting(meetingName: string) {
+    if (!this.socketService.getName()){
+      this.router.navigateByUrl("choose-name");
+      return; 
+    }
     this.loader.start();
   try {
     await this.socketService.joinMeeting(meetingName);

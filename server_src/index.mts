@@ -5,6 +5,7 @@ import { ClientToServerEvents, InterServerEvents, MeetingsMetadata, ServerToClie
 
 
 const meetingsMetadata : MeetingsMetadata = {};
+let idToNames: {[id: string]:  string} = {};
 const httpServer = createServer();
 const socketIOServer = new SocketIOServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer, {
   cors: {
@@ -17,6 +18,15 @@ httpServer.on("listening", () => console.log(`server listening on: ${inspect(htt
 socketIOServer.on("connection", (socket) => {
   socket.emit("available_meetings", meetingsMetadata);
 
+  socket.on("name", name => {
+    if (Object.values(idToNames).find(nameInUse => nameInUse == name)) {
+      socket.emit("name_already_taken_error", name);
+      return;
+    }
+    idToNames[socket.id] = name;
+    socketIOServer.emit("names", idToNames);
+    socket.emit("name_changed", name);
+  });
   socket.on("new_meeting", (meetingName, meetingDescription) => {
     if (meetingAlreadyExists(meetingName)) {
       socket.emit("meeting_already_exists_error", meetingName);

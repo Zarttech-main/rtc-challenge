@@ -21,12 +21,10 @@ export class MeetingComponent {
     }).then(stream => {
       this.ownStream = stream;
       this.socketService.setOwnStream(stream);
-      console.log(stream, socketService)
     });
     route.queryParams.subscribe(params => self.meetingName = params["name"])
     socketService.streamsObservables[this.meetingName].subscribe((streams: MeetingStreamsInfo) => {
       this.streams = streams;
-      console.log("streams updated", streams)
     });
   }
 }
