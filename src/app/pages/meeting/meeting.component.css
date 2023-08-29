@@ -1,10 +1,28 @@
 .active-meetings {
   display: flex;
-justify-content: space-around;
-flex-wrap: wrap;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
+
 .card-body video {
   border-radius: 15px;
-border: 12px black groove;
-max-width: 95vw;
+  border: 12px black groove;
+  max-width: 95vw;
+}
+
+.exit-meeting {
+  display: block;
+  width: 200px;
+  margin: 50px auto;
+}
+
+.exit-meeting button {
+  width: 100%;
+  height: 50px;
+  border-radius: 13px;
+  background-color: gray;
+  color: white;
+  font-size: 1.2em;
+  letter-spacing: 1px;
+  cursor: pointer;
 }

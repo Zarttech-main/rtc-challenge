@@ -11,11 +11,11 @@ const SERVER_URL = "ws://localhost:3000";
 export class SocketService {
   private socket: Socket;
   private meetingsData: MeetingsMetadata = {};
-  private names: {[id: string]:  string} = {};
+  private names: { [id: string]: string } = {};
   private meetingsSubscribers: Array<Subscriber<MeetingsMetadata>> = [];
-  private namesSubscribers: Array<Subscriber<{[id: string]:  string}>> = [];
+  private namesSubscribers: Array<Subscriber<{ [id: string]: string }>> = [];
   public readonly meetingsObservable: Observable<MeetingsMetadata>;
-  public readonly namesObservable: Observable<{[id: string]:  string}>;
+  public readonly namesObservable: Observable<{ [id: string]: string }>;
   private peerConnections: PeerConnections = {};
   private _ownStream: MediaStream | null = null;
   private get ownStream(): Promise<MediaStream> {
@@ -37,7 +37,7 @@ export class SocketService {
       subscriber.next(this.meetingsData);
       this.meetingsSubscribers.push(subscriber);
     });
-    
+
     this.namesObservable = new Observable((subscriber) => {
       subscriber.next(this.names);
       this.namesSubscribers.push(subscriber);
@@ -47,13 +47,13 @@ export class SocketService {
       transports: ["websocket"]
     });
     socket.on("connect", () => {
-    if (localStorage.getItem("name")) this.setName(localStorage.getItem("name")!!);
+      if (localStorage.getItem("name")) this.setName(localStorage.getItem("name")!!);
     });
     socket.on("available_meetings", (meetingsData: MeetingsMetadata) => {
       this.meetingsData = meetingsData;
       this.meetingsSubscribers.forEach(subscriber => subscriber.next(meetingsData));
     });
-    socket.on("names", (names: {[id: string]:  string}) => {
+    socket.on("names", (names: { [id: string]: string }) => {
       this.names = names;
     });
     socket.on("name_changed", (name: string) => {
@@ -63,7 +63,7 @@ export class SocketService {
       if (this.pendingJoinCallbacks.length) this.pendingJoinCallbacks[1]("Meeting doesn't exist");
     });
     socket.on("name_already_taken_error", (name) => {
-      if (this.pendingNameChangeCallbacks.length) this.pendingNameChangeCallbacks[1]("Username " + name +" already taken");
+      if (this.pendingNameChangeCallbacks.length) this.pendingNameChangeCallbacks[1]("Username " + name + " already taken");
     });
     socket.on("joined", async (meetingName: string, clientId: string) => {
       if (clientId == socket.id) {
@@ -136,6 +136,27 @@ export class SocketService {
       };
       await this.peerConnections[meetingName][clientId].addIceCandidate(candidate);
     });
+    socket.on("disconnected", async (clientId) => {
+      Object.entries(this.peerConnections).forEach(entry => {
+        const meetingName = entry[0];
+        const peerConnections = entry[1];
+        if (peerConnections[clientId]) {
+          this.toaster.info("1 participant left meeting: " + meetingName);
+          peerConnections[clientId].close();
+          delete peerConnections[clientId];
+          delete this.streams[meetingName][clientId];
+          this.streamsSubscribers[meetingName].forEach(subscriber => subscriber.next(this.streams[meetingName]))
+        }
+      })
+
+    });
+    socket.on("exited", async (meetingName: string, clientId: string) => {
+      this.peerConnections[meetingName][clientId].close();
+      delete this.peerConnections[meetingName][clientId];
+      delete this.streams[meetingName][clientId];
+      this.streamsSubscribers[meetingName].forEach(subscriber => subscriber.next(this.streams[meetingName]))
+      this.toaster.info("1 participant left meeting " + meetingName);
+    });
   }
   createMeeting(name: string, description: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
@@ -160,6 +181,14 @@ export class SocketService {
   setOwnStream(stream: MediaStream) {
     this._ownStream = stream;
   }
+  exitMeeting(meetingName: string) {
+    this.socket.emit("exit", meetingName);
+    Object.values(this.peerConnections[meetingName]).forEach(peerConnection => peerConnection.close());
+    delete this.peerConnections[meetingName];
+    delete this.streams[meetingName];
+    this.streamsSubscribers[meetingName].forEach(subscriber => subscriber.next(this.streams[meetingName]));
+    this.toaster.success("left meeting " + meetingName)
+  }
 
   getPeerName(value: string): string {
     return this.names[value]!!;
@@ -177,6 +206,9 @@ export class SocketService {
         reject(err.message);
       }
     }));
+  }
+  inMeeting(meetingName: string): boolean {
+    return !!(this.peerConnections[meetingName]);
   }
 }
 

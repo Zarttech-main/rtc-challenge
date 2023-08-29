@@ -16,7 +16,9 @@ export interface ServerToClientEvents {
   answer: (meetingName: string, offer: any, clientId: string) => void;
   candidate: (meetingName: string, candidate: any, clientId: string) => void;
   available_meetings: (metadata: MeetingsMetadata) => void;
-  joined: (meetingName: string, clientId: string) => void
+  joined: (meetingName: string, clientId: string) => void;
+  disconnected: (name: string) => void;
+  exited: (meetingName: string, clientId: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -26,6 +28,7 @@ export interface ClientToServerEvents {
   answer: (meetingName: string, clientId: string, answer: any) => void;
   offer: (meetingName: string, clientId: string, offer: any) => void;
   candidate: (meetingName: string, cleintId: string, candidate: any) => void;
+  exit: (meeting: string) => void;
 }
 
 export interface InterServerEvents {

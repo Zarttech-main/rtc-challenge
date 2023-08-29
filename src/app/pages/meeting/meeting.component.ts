@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SocketService, MeetingStreamsInfo } from 'src/app/services/socket-service.service';
@@ -13,7 +13,7 @@ export class MeetingComponent {
   meetingName: string = "";
   streams: MeetingStreamsInfo = {};
   ownStream: MediaStream | null = null;
-  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService, route: ActivatedRoute) {
+  constructor(private toastr: ToastrService, private loader: NgxUiLoaderService, private socketService: SocketService, route: ActivatedRoute,private router: Router) {
     const self = this;
     navigator.mediaDevices.getUserMedia({
       video: true,
@@ -26,5 +26,9 @@ export class MeetingComponent {
     socketService.streamsObservables[this.meetingName].subscribe((streams: MeetingStreamsInfo) => {
       this.streams = streams;
     });
+  }
+  exitMeeting() {
+    this.socketService.exitMeeting(this.meetingName);
+    this.router.navigateByUrl("/");
   }
 }
