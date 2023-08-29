@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "server": "tsc -p server.tsconfig.json && node server_dist/index.mjs",
     "build": "tsc -p server.tsconfig.json && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
