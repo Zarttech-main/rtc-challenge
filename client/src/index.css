@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply text-[62.5%];
+  }
+
+  body {
+    @apply text-[1.6rem] h-screen bg-primary-black text-white px-[5rem] pt-[2rem] relative;
+  }
+
+  #root {
+    @apply h-full;
+  }
+}
